@@ -5,6 +5,7 @@ import { createCube } from "./components/cube.js"
 import { createScene } from "./components/scene.js"
 import { createLights } from "./components/light.js"
 
+import { createControls } from './systems/controls.js'
 import { createRenderer } from "./systems/renderer.js"
 import { Resizer } from "./systems/Resizer.js"
 import { Loop } from "./systems/Loop.js"
@@ -23,6 +24,7 @@ class World {
     container.append(renderer.domElement)
 
 
+
     const cube1 = createCube();
     cube1.position.set(1, 0, 0)
     cube1.scale.set(0.5, 0.5, 0.5)
@@ -34,6 +36,12 @@ class World {
     minicube1.position.set(1, 0, 0)
     minicube1.material.color = new Color('red')
     cube1.add(minicube1)
+
+    const controls = createControls(camera, renderer.domElement)
+    // controls.target.set(1, 2, 3)
+    controls.target.copy(cube1.position)
+    controls.enableDaming = true;
+
 
     const light = createLights()
 
