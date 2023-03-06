@@ -1,7 +1,8 @@
 import { Color } from "three"
 
 import { createCamera } from "./components/camera.js"
-import { createCube } from "./components/cube.js"
+// import { createCube } from "./components/cube.js"
+import { createMeshGroup } from "./components/cube.js"
 import { createScene } from "./components/scene.js"
 import { createLights } from "./components/light.js"
 
@@ -22,20 +23,10 @@ class World {
     renderer = createRenderer();
     loop = new Loop(camera, scene, renderer)
     container.append(renderer.domElement)
-
-    const cube1 = createCube();
-    cube1.position.set(1, 0, 0)
-    cube1.scale.set(0.5, 0.5, 0.5)
-    const cube2 = createCube();
-    cube2.position.set(-1, 0, 0)
-
-    const minicube1 = createCube();
-    minicube1.scale.set(0.5, 0.5, 0.5)
-    minicube1.position.set(1, 0, 0)
-    minicube1.material.color = new Color('red')
-    cube1.add(minicube1)
-
+    
+    const {ambientLight, mainLight } = createLights()
     const controls = createControls(camera, renderer.domElement)
+    
     // controls.target.set(1, 2, 3)
     // controls.target.copy(cube1.position);
 
@@ -43,12 +34,29 @@ class World {
     //   this.render()
     // })
     
-    const {ambientLight, mainLight } = createLights()
+
+    // const cube1 = createCube();
+    // cube1.position.set(1, 0, 0)
+    // cube1.scale.set(0.5, 0.5, 0.5)
+    // const cube2 = createCube();
+    // cube2.position.set(-1, 0, 0)
+
+    // const minicube1 = createCube();
+    // minicube1.scale.set(0.5, 0.5, 0.5)
+    // minicube1.position.set(1, 0, 0)
+    // minicube1.material.color = new Color('red')
+    // cube1.add(minicube1)
+
+    const meshGroup = createMeshGroup();
+
+
+    loop.updatables.push(controls, meshGroup)
+    scene.add(ambientLight, mainLight, meshGroup)
 
     // loop.updatables.push(cube1)
-    loop.updatables.push(controls)
+    // loop.updatables.push(controls)
 
-    scene.add(cube1, cube2, ambientLight, mainLight)
+    scene.add(meshGroup, ambientLight, mainLight)
 
     const resizer = new Resizer(container, camera, renderer, this.render)
 
