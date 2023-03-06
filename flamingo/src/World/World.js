@@ -23,8 +23,6 @@ class World {
     loop = new Loop(camera, scene, renderer)
     container.append(renderer.domElement)
 
-
-
     const cube1 = createCube();
     cube1.position.set(1, 0, 0)
     cube1.scale.set(0.5, 0.5, 0.5)
@@ -39,13 +37,16 @@ class World {
 
     const controls = createControls(camera, renderer.domElement)
     // controls.target.set(1, 2, 3)
-    controls.target.copy(cube1.position)
-    controls.enableDaming = true;
+    // controls.target.copy(cube1.position);
 
-
+    // controls.addEventListener('change', () => {
+    //   this.render()
+    // })
+    
     const light = createLights()
 
-    loop.updatables.push(cube1)
+    // loop.updatables.push(cube1)
+    loop.updatables.push(controls)
 
     scene.add(cube1, cube2, light)
 
