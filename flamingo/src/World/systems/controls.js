@@ -5,5 +5,4 @@ function createControls(camera, canvas) {
 
   return controls
 }
-
 export { createControls }
