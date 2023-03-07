@@ -1,81 +1,48 @@
-import { Color } from "three"
+import { createCamera } from "./components/camera.js";
+import { createLights } from "./components/light.js";
+import { createScene } from "./components/scene.js";
+import { createAxesHelper, createGridHelper } from './components/helpers.js'
 
-import { createCamera } from "./components/camera.js"
-// import { createCube } from "./components/cube.js"
-import { createMeshGroup } from "./components/cube.js"
-import { createScene } from "./components/scene.js"
-import { createLights } from "./components/light.js"
+import { Train } from "./components/Train/Train.js";
 
-import { createControls } from './systems/controls.js'
-import { createRenderer } from "./systems/renderer.js"
-import { Resizer } from "./systems/Resizer.js"
-import { Loop } from "./systems/Loop.js"
+import { createControls } from "./systems/controls.js";
+import { createRenderer } from "./systems/renderer.js";
+import { Resizer } from "./systems/Resizer.js";
+import { Loop } from "./systems/Loop.js";
 
-let camera, 
-    scene,
-    renderer,
-    loop
-
+let camera, renderer, scene, loop
 class World {
   constructor(container) {
     camera = createCamera(container);
-    scene = createScene();
     renderer = createRenderer();
-    loop = new Loop(camera, scene, renderer)
+    scene = createScene();
+    loop = new Loop(camera, scene, renderer);
     container.append(renderer.domElement)
-    
-    const {ambientLight, mainLight } = createLights()
+
     const controls = createControls(camera, renderer.domElement)
-    
-    // controls.target.set(1, 2, 3)
-    // controls.target.copy(cube1.position);
+    const { ambientLight, mainLight} = createLights();
+    const train = new Train();
 
-    // controls.addEventListener('change', () => {
-    //   this.render()
-    // })
-    
+    loop.updatables.push(controls, train)
 
-    // const cube1 = createCube();
-    // cube1.position.set(1, 0, 0)
-    // cube1.scale.set(0.5, 0.5, 0.5)
-    // const cube2 = createCube();
-    // cube2.position.set(-1, 0, 0)
+    scene.add(ambientLight, mainLight, train)
 
-    // const minicube1 = createCube();
-    // minicube1.scale.set(0.5, 0.5, 0.5)
-    // minicube1.position.set(1, 0, 0)
-    // minicube1.material.color = new Color('red')
-    // cube1.add(minicube1)
+    const resizer = new Resizer(container, camera, renderer)
 
-    const meshGroup = createMeshGroup();
+    scene.add(createAxesHelper(), createGridHelper())
 
-
-    loop.updatables.push(controls, meshGroup)
-    scene.add(ambientLight, mainLight, meshGroup)
-
-    // loop.updatables.push(cube1)
-    // loop.updatables.push(controls)
-
-    scene.add(meshGroup, ambientLight, mainLight)
-
-    const resizer = new Resizer(container, camera, renderer, this.render)
-
-    // 외부 모듈에 있는 클래스를 여기서 이렇게 제어할 수 있네..!? 댑악 댑악
-    // resizer.onResize = () => {
-    //   this.render();
-    // }
-  }
-  
-  render() {
-    renderer.render(scene, camera)
   }
 
   start() {
     loop.start()
   }
 
-  stop() {
-    loop.stop()
+  end() {
+    loop.end()
+  }
+
+  render() {
+    renderer.render(camera, scene)
   }
 }
 
