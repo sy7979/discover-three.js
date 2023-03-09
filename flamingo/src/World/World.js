@@ -1,3 +1,4 @@
+import { loadBirds } from "./components/birds/birds.js";
 import { createCamera } from "./components/camera.js";
 import { createLights } from "./components/light.js";
 import { createScene } from "./components/scene.js";
@@ -10,7 +11,7 @@ import { createRenderer } from "./systems/renderer.js";
 import { Resizer } from "./systems/Resizer.js";
 import { Loop } from "./systems/Loop.js";
 
-let camera, renderer, scene, loop
+let camera, renderer, scene, loop, controls
 class World {
   constructor(container) {
     camera = createCamera(container);
@@ -18,14 +19,14 @@ class World {
     scene = createScene();
     loop = new Loop(camera, scene, renderer);
     container.append(renderer.domElement)
+    controls = createControls(camera, renderer.domElement)
 
-    const controls = createControls(camera, renderer.domElement)
     const { ambientLight, mainLight} = createLights();
     const train = new Train();
 
-    loop.updatables.push(controls, train)
+    loop.updatables.push(controls)
 
-    scene.add(ambientLight, mainLight, train)
+    scene.add(ambientLight, mainLight)
 
     const resizer = new Resizer(container, camera, renderer)
 
@@ -43,6 +44,15 @@ class World {
 
   render() {
     renderer.render(camera, scene)
+  }
+
+  async init() {
+    const { parrot, flamingo, stork } = await loadBirds()
+    
+    controls.target.copy(parrot.position)
+    
+    loop.updatables.push(parrot, flamingo, stork)
+    scene.add(parrot, flamingo, stork)
   }
 }
 
