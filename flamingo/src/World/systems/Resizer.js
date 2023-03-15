@@ -5,7 +5,6 @@ const setSize = (container, camera, renderer) => {
   renderer.setPixelRatio(window.devicePixelRatio)
 }
 
-
 class Resizer {
   constructor(container, camera, renderer) {
     setSize(container, camera, renderer)
